@@ -9,6 +9,9 @@ import clientRoutes from "./routes/client.js";
 import generalRoutes from "./routes/general.js";
 import managementRoutes from "./routes/management.js";
 import salesRoutes from "./routes/sales.js";
+import authRoutes from "./routes/auth.js";
+import swaggerUi from "swagger-ui-express";
+import YAML from "yamljs";
 
 // data imports
 import User from "./models/User.js";
@@ -17,6 +20,10 @@ import ProductStat from "./models/ProductStat.js";
 import Transaction from "./models/Transaction.js";
 import OverallStat from "./models/OverallStat.js";
 import AffiliateStat from "./models/AffiliateStat.js";
+import DemandeLicence from "./models/DemandeLicence.js";
+import Licence from "./models/Licence.js";
+import Paiement from "./models/Paiement.js";
+import Entreprise from "./models/Entreprise.js";
 import {
   dataUser,
   dataProduct,
@@ -26,9 +33,14 @@ import {
   dataAffiliateStat,
 } from "./data/index.js";
 
+
+const app = express();
+
+const swaggerDocument = YAML.load("./swagger.yaml");
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+
 /* CONFIGURATION */
 dotenv.config();
-const app = express();
 app.use(express.json());
 app.use(helmet());
 app.use(helmet.crossOriginResourcePolicy({ policy: "cross-origin" }));
@@ -42,6 +54,7 @@ app.use("/client", clientRoutes);
 app.use("/general", generalRoutes);
 app.use("/management", managementRoutes);
 app.use("/sales", salesRoutes);
+app.use("/auth", authRoutes);
 
 /* MONGOOSE SETUP */
 const PORT = process.env.PORT || 9000;

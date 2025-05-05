@@ -19,16 +19,33 @@ const UserSchema = new mongoose.Schema(
       required: true,
       min: 5,
     },
+    phoneNumber: {
+      type: String,
+      required: true,
+      min:8
+    },
     city: String,
     state: String,
     country: String,
     occupation: String,
-    phoneNumber: String,
     transactions: Array,
     role: {
       type: String,
-      enum: ["user", "admin", "superadmin"],
-      default: "admin",
+      enum: ['ADMIN_ABSHORE', 'RESPONSABLE_ENTREPRISE', 'AGENT'],
+      required: true,
+    },
+    company: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Entreprise',
+      default: null // null pour les AdminAbshore
+    },
+    createdAt: {
+      type: Date,
+      default: Date.now
+    },
+    isActive: {
+      type: Boolean,
+      default: true // pour soft delete
     },
   },
   { timestamps: true }
