@@ -1,0 +1,257 @@
+openapi: 3.0.0
+info:
+  title: API Documentation
+  version: 1.0.0
+paths:
+  /auth/signup:
+    post:
+      summary: Créer un nouvel AdminAbshore
+      tags:
+        - Auth
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+                - email
+                - password
+                - phoneNumber
+              properties:
+                name:
+                  type: string
+                  example: Mohamed Ali
+                email:
+                  type: string
+                  example: ali@example.com
+                password:
+                  type: string
+                  example: monmotdepasse
+                phoneNumber:
+                  type: string
+                  example: "12345678"
+      responses:
+        201:
+          description: AdminAbshore créé avec succès
+        400:
+          description: Email déjà utilisé
+        500:
+          description: Erreur serveur
+  /auth/login:
+    post:
+      summary: Connexion d'un AdminAbshore
+      tags:
+        - Auth
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+                - password
+              properties:
+                email:
+                  type: string
+                  example: ali@example.com
+                password:
+                  type: string
+                  example: monmotdepasse
+      responses:
+        200:
+          description: Connexion réussie
+        400:
+          description: Mot de passe incorrect
+        404:
+          description: Utilisateur non trouvé
+        500:
+          description: Erreur serveur
+  /management/addentreprise:
+    post:
+      summary: Ajouter une entreprise (seulement pour AdminAbshore)
+      tags:
+        - Management
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - nom
+              properties:
+                nom:
+                  type: string
+                  example: "Entreprise ABC"
+                logo:
+                  type: string
+                  example: "https://exemple.com/logo.png"
+                email:
+                  type: string
+                  example: "contact@abc.com"
+                telephone:
+                  type: string
+                  example: "12345678"
+                statut:
+                  type: string
+                  example: "actif"
+      responses:
+        201:
+          description: Entreprise créée avec succès
+        401:
+          description: Non authentifié (token manquant ou invalide)
+        403:
+          description: Accès refusé (pas admin)
+        500:
+          description: Erreur serveur
+  /management/entreprises:
+    get:
+      summary: Récupérer toutes les entreprises (seulement pour AdminAbshore)
+      tags:
+        - Management
+      security:
+        - bearerAuth: []
+      responses:
+        200:
+          description: Liste des entreprises
+        401:
+          description: Non authentifié (token manquant ou invalide)
+        403:
+          description: Accès refusé (pas admin)
+        500:
+          description: Erreur serveur
+  /management/addresponsable:
+    post:
+      summary: Ajouter un responsable d'entreprise
+      tags:
+        - Management
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+                - email
+                - password
+                - phoneNumber
+                - companyId
+              properties:
+                name:
+                  type: string
+                  example: "Sami Ben Salah"
+                  description: Nom du responsable
+                email:
+                  type: string
+                  example: "sami@example.com"
+                  description: Email du responsable
+                password:
+                  type: string
+                  example: "motdepasse"
+                  description: Mot de passe du responsable
+                phoneNumber:
+                  type: string
+                  example: "12345678"
+                  description: Numéro de téléphone
+                companyId:
+                  type: string
+                  example: "665f1b2c3a4d5e6f7g8h9i0j"
+                  description: ID de l'entreprise
+      responses:
+        201:
+          description: Responsable créé avec succès
+        401:
+          description: Non authentifié (token manquant ou invalide)
+        403:
+          description: Accès refusé (pas admin)
+        404:
+          description: Entreprise non trouvée
+        500:
+          description: Erreur serveur
+  /management/responsables:
+    get:
+      summary: Récupérer tous les responsables d'entreprise (seulement pour AdminAbshore)
+      tags:
+        - Management
+      security:
+        - bearerAuth: []
+      responses:
+        200:
+          description: Liste des responsables d'entreprise
+        401:
+          description: Non authentifié (token manquant ou invalide)
+        403:
+          description: Accès refusé (pas admin)
+        500:
+          description: Erreur serveur
+  /management/entreprises-with-flag:
+    get:
+      summary: Récupérer toutes les entreprises avec un indicateur si c'est l'admin connecté qui l'a créée
+      tags:
+        - Management
+      security:
+        - bearerAuth: []
+      responses:
+        200:
+          description: Liste des entreprises avec indicateur
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    _id:
+                      type: string
+                      example: "665f1b2c3a4d5e6f7g8h9i0j"
+                    nom:
+                      type: string
+                      example: "Entreprise ABC"
+                    logo:
+                      type: string
+                      example: "https://exemple.com/logo.png"
+                    email:
+                      type: string
+                      example: "contact@abc.com"
+                    telephone:
+                      type: string
+                      example: "12345678"
+                    statut:
+                      type: string
+                      example: "actif"
+                    createdBy:
+                      type: object
+                      properties:
+                        _id:
+                          type: string
+                          example: "665f1b2c3a4d5e6f7g8h9i0j"
+                        name:
+                          type: string
+                          example: "Admin Abshore"
+                        email:
+                          type: string
+                          example: "admin@abshore.com"
+                    isMine:
+                      type: boolean
+                      example: true
+        401:
+          description: Non authentifié (token manquant ou invalide)
+        403:
+          description: Accès refusé (pas admin)
+        500:
+          description: Erreur serveur
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
