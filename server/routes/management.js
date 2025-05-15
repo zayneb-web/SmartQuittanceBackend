@@ -6,15 +6,28 @@ import {
   addEntreprise,
   getEntreprises,
   getEntreprisesWithFlag,
+  addAgency,
+  getAgencies,
 } from "../controllers/management.js";
-import { verifyToken, isAdminAbshore } from "../middleware/authentification.js";
+import { verifyToken } from "../middleware/authentification.js";
+
 const router = express.Router();
 
-router.get("/admins", getAdmins);
-router.get("/performance/:id", getUserPerformance);
-router.post("/addresponsable", verifyToken, isAdminAbshore, addResponsableEntreprise);
-router.get("/responsables", verifyToken, isAdminAbshore, getResponsablesEntreprise);
-router.post("/addentreprise", verifyToken, isAdminAbshore, addEntreprise);
-router.get("/entreprises", verifyToken, isAdminAbshore, getEntreprises);
-router.get("/entreprises-with-flag", verifyToken, isAdminAbshore, getEntreprisesWithFlag);
+// Routes avec vérification directe dans le contrôleur
+router.get("/admins", verifyToken, getAdmins);
+router.get("/performance/:id", verifyToken, getUserPerformance);
+
+router.post("/addresponsable", verifyToken, addResponsableEntreprise);
+
+router.get("/responsables", verifyToken, getResponsablesEntreprise);
+
+router.post("/addentreprise", verifyToken, addEntreprise);
+
+router.get("/entreprises", verifyToken, getEntreprises);
+
+router.get("/entreprises-with-flag", verifyToken, getEntreprisesWithFlag);
+
+router.post("/addagency", verifyToken, addAgency);
+router.get("/agencies", verifyToken, getAgencies);
+
 export default router;
