@@ -22,7 +22,7 @@ const UserSchema = new mongoose.Schema(
     phoneNumber: {
       type: String,
       required: true,
-      min:8
+      min: 8,
     },
     city: String,
     state: String,
@@ -31,21 +31,42 @@ const UserSchema = new mongoose.Schema(
     transactions: Array,
     role: {
       type: String,
-      enum: ['ADMIN_ABSHORE', 'RESPONSABLE_ENTREPRISE', 'AGENT'],
+      enum: [
+        "SUPER_ADMIN_ABSHORE", // Peut tout gérer
+        "ADMIN_ABSHORE", // Gère les responsables entreprise et finance
+        "COMPANY_MANAGER", // Gère les utilisateurs de son entreprise
+        "FINANCE_COMPANY_MANAGER", // Gère la finance de son entreprise
+        "ADMIN_AGENCY", // Gère tous les agents de son agence
+        "AGENT", // Utilisateur de base
+      ],
       required: true,
     },
+    managedBy: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      default: null, // Référence vers l'utilisateur qui gère cet utilisateur
+    },
+    managedUsers: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+      },
+    ],
     company: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'Entreprise',
-      default: null // null pour les AdminAbshore
+      ref: "Entreprise",
+    },
+    agency: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Agency",
     },
     createdAt: {
       type: Date,
-      default: Date.now
+      default: Date.now,
     },
     isActive: {
       type: Boolean,
-      default: true // pour soft delete
+      default: true, // pour soft delete
     },
   },
   { timestamps: true }
