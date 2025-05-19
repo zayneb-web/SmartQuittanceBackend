@@ -2,9 +2,9 @@ import mongoose from "mongoose";
 import { StatutLicence } from "./status.js";
 
 const LicenceSchema = new mongoose.Schema({
-  entreprise: {
+  company: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "Entreprise",
+    ref: "Company",
     required: true,
   },
 

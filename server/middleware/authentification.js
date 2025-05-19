@@ -14,8 +14,36 @@ export const verifyToken = async (req, res, next) => {
   }
 };
 
+export const isSuperAdminAbshore = (req, res, next) => {
+  if (req.user.role !== "SUPER_ADMIN_ABSHORE") {
+    return res.status(403).json({ message: "Accès refusé" });
+  }
+  next();
+};
+
 export const isAdminAbshore = (req, res, next) => {
   if (req.user.role !== "ADMIN_ABSHORE") {
+    return res.status(403).json({ message: "Accès refusé" });
+  }
+  next();
+};
+
+export const isResponsableCompany = (req, res, next) => {
+  if (req.user.role !== "RESPONSABLE_COMPANY") {
+    return res.status(403).json({ message: "Accès refusé" });
+  }
+  next();
+};
+
+export const isResponsableFinance = (req, res, next) => {
+  if (req.user.role !== "RESPONSABLE_FINANCE") {
+    return res.status(403).json({ message: "Accès refusé" });
+  }
+  next();
+};
+
+export const isAdminAgence = (req, res, next) => {
+  if (req.user.role !== "ADMIN_AGENCE") {
     return res.status(403).json({ message: "Accès refusé" });
   }
   next();

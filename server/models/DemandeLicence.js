@@ -4,7 +4,7 @@ import { StatutDemande } from "./status.js";
 const DemandeLicenceSchema = new mongoose.Schema({
   entreprise: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "Entreprise",
+    ref: "Company",
     required: true,
   },
 

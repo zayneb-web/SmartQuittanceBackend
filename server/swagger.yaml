@@ -41,7 +41,8 @@ paths:
           description: Erreur serveur
   /auth/login:
     post:
-      summary: Connexion d'un AdminAbshore
+      summary: Connexion universelle (tous rôles)
+      description: Détecte automatiquement le rôle de l'utilisateur
       tags:
         - Auth
       requestBody:
@@ -56,24 +57,235 @@ paths:
               properties:
                 email:
                   type: string
-                  example: ali@example.com
+                  example: user@example.com
                 password:
                   type: string
-                  example: monmotdepasse
+                  example: password123
       responses:
         200:
           description: Connexion réussie
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Connexion réussie"
+                  user:
+                    type: object
+                    properties:
+                      _id:
+                        type: string
+                      name:
+                        type: string
+                      email:
+                        type: string
+                      role:
+                        type: string
+                  token:
+                    type: string
+                  role:
+                    type: string
+        400:
+          description: Mot de passe incorrect
+        401:
+          description: Compte désactivé
+        404:
+          description: Utilisateur non trouvé
+        500:
+          description: Erreur serveur
+
+  /auth/login/superadmin:
+    post:
+      summary: Connexion Super Admin Abshore
+      description: Endpoint dédié à la connexion des super-administrateurs
+      tags:
+        - Auth
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+                - password
+              properties:
+                email:
+                  type: string
+                  example: superadmin@abshore.com
+                password:
+                  type: string
+                  example: password123
+      responses:
+        200:
+          description: Connexion réussie
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Connexion réussie"
+                  user:
+                    type: object
+                    properties:
+                      _id:
+                        type: string
+                      name:
+                        type: string
+                      email:
+                        type: string
+                      role:
+                        type: string
+                        example: "SUPER_ADMIN_ABSHORE"
+                  token:
+                    type: string
+                  role:
+                    type: string
+                    example: "SUPER_ADMIN_ABSHORE"
         400:
           description: Mot de passe incorrect
         404:
           description: Utilisateur non trouvé
         500:
           description: Erreur serveur
-  /management/addentreprise:
-    post:
-      summary: Ajouter une entreprise (seulement pour AdminAbshore)
+
+  # SUPER ADMIN ABSHORE APIs
+  /management/super-admin-abshore/{id}:
+    get:
+      summary: Récupérer un Super Admin Abshore par son ID
+      description: Accessible uniquement pour SUPER_ADMIN_ABSHORE
       tags:
-        - Management
+        - Management - Super Admin Abshore
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: ID du Super Admin Abshore
+      responses:
+        200:
+          description: Super Admin Abshore trouvé
+        401:
+          description: Non authentifié (token manquant ou invalide)
+        403:
+          description: Accès refusé (permissions insuffisantes)
+        404:
+          description: Super Admin Abshore non trouvé
+        500:
+          description: Erreur serveur
+
+  /management/admin-abshore:
+    post:
+      summary: Créer un nouvel Admin Abshore
+      description: Accessible uniquement pour SUPER_ADMIN_ABSHORE
+      tags:
+        - Management - Super Admin Abshore
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+                - email
+                - password
+                - phoneNumber
+              properties:
+                name:
+                  type: string
+                  example: "Ahmed Trabelsi"
+                email:
+                  type: string
+                  example: "ahmed@abshore.com"
+                password:
+                  type: string
+                  example: "password123"
+                phoneNumber:
+                  type: string
+                  example: "71234567"
+                city:
+                  type: string
+                  example: "Tunis"
+                state:
+                  type: string
+                  example: "Tunis"
+                country:
+                  type: string
+                  example: "Tunisie"
+      responses:
+        201:
+          description: Admin Abshore créé avec succès
+        400:
+          description: Email déjà utilisé
+        401:
+          description: Non authentifié (token manquant ou invalide)
+        403:
+          description: Accès refusé (pas super admin)
+        500:
+          description: Erreur serveur
+
+  /management/admins-abshore:
+    get:
+      summary: Récupérer tous les Admins Abshore
+      description: Accessible uniquement pour SUPER_ADMIN_ABSHORE
+      tags:
+        - Management - Super Admin Abshore
+      security:
+        - bearerAuth: []
+      responses:
+        200:
+          description: Liste des Admins Abshore
+        401:
+          description: Non authentifié (token manquant ou invalide)
+        403:
+          description: Accès refusé (permissions insuffisantes)
+        500:
+          description: Erreur serveur
+
+  # ADMIN ABSHORE APIs
+  /management/admin-abshore/{id}:
+    get:
+      summary: Récupérer un Admin Abshore par son ID
+      description: Accessible pour SUPER_ADMIN_ABSHORE et ADMIN_ABSHORE
+      tags:
+        - Management - Admin Abshore
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: ID de l'Admin Abshore
+      responses:
+        200:
+          description: Admin Abshore trouvé
+        401:
+          description: Non authentifié (token manquant ou invalide)
+        403:
+          description: Accès refusé (permissions insuffisantes)
+        404:
+          description: Admin Abshore non trouvé
+        500:
+          description: Erreur serveur
+
+  /management/addcompany:
+    post:
+      summary: Ajouter une entreprise
+      description: Accessible pour SUPER_ADMIN_ABSHORE et ADMIN_ABSHORE
+      tags:
+        - Management - Admin Abshore
       security:
         - bearerAuth: []
       requestBody:
@@ -109,11 +321,13 @@ paths:
           description: Accès refusé (pas admin)
         500:
           description: Erreur serveur
-  /management/entreprises:
+
+  /management/companies:
     get:
-      summary: Récupérer toutes les entreprises (seulement pour AdminAbshore)
+      summary: Récupérer toutes les entreprises
+      description: Accessible pour SUPER_ADMIN_ABSHORE et ADMIN_ABSHORE
       tags:
-        - Management
+        - Management - Admin Abshore
       security:
         - bearerAuth: []
       responses:
@@ -125,11 +339,13 @@ paths:
           description: Accès refusé (pas admin)
         500:
           description: Erreur serveur
-  /management/addresponsable:
+
+  /management/addcompanymanager:
     post:
       summary: Ajouter un responsable d'entreprise
+      description: Accessible pour SUPER_ADMIN_ABSHORE et ADMIN_ABSHORE
       tags:
-        - Management
+        - Management - Admin Abshore
       security:
         - bearerAuth: []
       requestBody:
@@ -176,11 +392,13 @@ paths:
           description: Entreprise non trouvée
         500:
           description: Erreur serveur
-  /management/responsables:
+
+  /management/companymanagers:
     get:
-      summary: Récupérer tous les responsables d'entreprise (seulement pour AdminAbshore)
+      summary: Récupérer tous les responsables d'entreprise
+      description: Accessible pour SUPER_ADMIN_ABSHORE et ADMIN_ABSHORE
       tags:
-        - Management
+        - Management - Admin Abshore
       security:
         - bearerAuth: []
       responses:
@@ -192,11 +410,134 @@ paths:
           description: Accès refusé (pas admin)
         500:
           description: Erreur serveur
-  /management/entreprises-with-flag:
+
+  /management/companymanager/{id}:
+    get:
+      summary: Récupérer un responsable d'entreprise par son ID
+      description: Accessible pour SUPER_ADMIN_ABSHORE et ADMIN_ABSHORE
+      tags:
+        - Management - Admin Abshore
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: ID du responsable d'entreprise
+      responses:
+        200:
+          description: Responsable d'entreprise trouvé
+        401:
+          description: Non authentifié (token manquant ou invalide)
+        404:
+          description: Responsable non trouvé
+        500:
+          description: Erreur serveur
+
+  /management/addfinancemanager:
+    post:
+      summary: Ajouter un responsable financier
+      description: Accessible pour SUPER_ADMIN_ABSHORE et ADMIN_ABSHORE
+      tags:
+        - Management - Admin Abshore
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+                - email
+                - password
+                - phoneNumber
+                - companyId
+              properties:
+                name:
+                  type: string
+                  example: "Nadia Ben Mohamed"
+                  description: Nom du responsable financier
+                email:
+                  type: string
+                  example: "nadia@example.com"
+                  description: Email du responsable financier
+                password:
+                  type: string
+                  example: "motdepasse"
+                  description: Mot de passe du responsable financier
+                phoneNumber:
+                  type: string
+                  example: "12345678"
+                  description: Numéro de téléphone
+                companyId:
+                  type: string
+                  example: "665f1b2c3a4d5e6f7g8h9i0j"
+                  description: ID de l'entreprise
+      responses:
+        201:
+          description: Responsable financier créé avec succès
+        401:
+          description: Non authentifié (token manquant ou invalide)
+        403:
+          description: Accès refusé (pas admin)
+        404:
+          description: Entreprise non trouvée
+        500:
+          description: Erreur serveur
+
+  /management/financemanagers:
+    get:
+      summary: Récupérer tous les responsables financiers
+      description: Accessible pour SUPER_ADMIN_ABSHORE et ADMIN_ABSHORE
+      tags:
+        - Management - Admin Abshore
+      security:
+        - bearerAuth: []
+      responses:
+        200:
+          description: Liste des responsables financiers
+        401:
+          description: Non authentifié (token manquant ou invalide)
+        403:
+          description: Accès refusé (pas admin)
+        500:
+          description: Erreur serveur
+
+  /management/financemanager/{id}:
+    get:
+      summary: Récupérer un responsable financier par son ID
+      description: Accessible pour SUPER_ADMIN_ABSHORE et ADMIN_ABSHORE
+      tags:
+        - Management - Admin Abshore
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: ID du responsable financier
+      responses:
+        200:
+          description: Responsable financier trouvé
+        401:
+          description: Non authentifié (token manquant ou invalide)
+        404:
+          description: Responsable non trouvé
+        500:
+          description: Erreur serveur
+
+  /management/companies-with-flag:
     get:
       summary: Récupérer toutes les entreprises avec un indicateur si c'est l'admin connecté qui l'a créée
+      description: Accessible pour SUPER_ADMIN_ABSHORE et ADMIN_ABSHORE
       tags:
-        - Management
+        - Management - Admin Abshore
       security:
         - bearerAuth: []
       responses:
@@ -246,6 +587,392 @@ paths:
           description: Non authentifié (token manquant ou invalide)
         403:
           description: Accès refusé (pas admin)
+        500:
+          description: Erreur serveur
+
+  /management/addadminagency:
+    post:
+      summary: Créer un nouvel Admin d'Agence
+      description: Accessible pour ADMIN_ABSHORE et COMPANY_MANAGER
+      tags:
+        - Management - Agency
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+                - email
+                - password
+                - phoneNumber
+                - agencyId
+              properties:
+                name:
+                  type: string
+                  example: "Sonia Ben Ahmed"
+                email:
+                  type: string
+                  example: "sonia@agence.com"
+                password:
+                  type: string
+                  example: "motdepasse"
+                phoneNumber:
+                  type: string
+                  example: "12345678"
+                agencyId:
+                  type: string
+                  example: "665f1b2c3a4d5e6f7g8h9i0j"
+      responses:
+        201:
+          description: Admin d'agence créé avec succès
+        400:
+          description: Email déjà utilisé
+        401:
+          description: Non authentifié (token manquant ou invalide)
+        403:
+          description: Accès refusé (pas autorisé)
+        404:
+          description: Agence non trouvée
+        500:
+          description: Erreur serveur
+
+  /management/adminagencies:
+    get:
+      summary: Récupérer tous les Admins d'Agence
+      description: Accessible pour ADMIN_ABSHORE et COMPANY_MANAGER
+      tags:
+        - Management - Agency
+      security:
+        - bearerAuth: []
+      responses:
+        200:
+          description: Liste des Admins d'Agence
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    _id:
+                      type: string
+                    name:
+                      type: string
+                    email:
+                      type: string
+                    phoneNumber:
+                      type: string
+                    agency:
+                      type: object
+                    createdAt:
+                      type: string
+                      format: date-time
+        401:
+          description: Non authentifié (token manquant ou invalide)
+        403:
+          description: Accès refusé (pas autorisé)
+        500:
+          description: Erreur serveur
+
+  /management/adminagency/{id}:
+    get:
+      summary: Récupérer un Admin d'Agence par son ID
+      description: Accessible pour ADMIN_ABSHORE et COMPANY_MANAGER
+      tags:
+        - Management - Agency
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: ID de l'Admin d'Agence
+      responses:
+        200:
+          description: Admin d'Agence trouvé
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  _id:
+                    type: string
+                  name:
+                    type: string
+                  email:
+                    type: string
+                  phoneNumber:
+                    type: string
+                  agency:
+                    type: object
+                  createdAt:
+                    type: string
+                    format: date-time
+        401:
+          description: Non authentifié (token manquant ou invalide)
+        403:
+          description: Accès refusé (pas autorisé)
+        404:
+          description: Admin d'agence non trouvé
+        500:
+          description: Erreur serveur
+
+  /management/addagency:
+    post:
+      summary: Ajouter une agence
+      description: Accessible pour ADMIN_ABSHORE et COMPANY_MANAGER
+      tags:
+        - Management - Admin Abshore
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+                - code
+                - contact
+              properties:
+                name:
+                  type: string
+                  example: "Agence Nord"
+                code:
+                  type: string
+                  example: "AGN01"
+                address:
+                  type: object
+                  properties:
+                    street:
+                      type: string
+                      example: "123 Rue de la République"
+                    city:
+                      type: string
+                      example: "Tunis"
+                    state:
+                      type: string
+                      example: "Tunis"
+                    country:
+                      type: string
+                      example: "Tunisie"
+                    zipCode:
+                      type: string
+                      example: "1000"
+                contact:
+                  type: object
+                  required:
+                    - email
+                    - phone
+                  properties:
+                    email:
+                      type: string
+                      example: "contact@agencenord.com"
+                    phone:
+                      type: string
+                      example: "71234567"
+                managerId:
+                  type: string
+                  example: "665f1b2c3a4d5e6f7g8h9i0j"
+      responses:
+        201:
+          description: Agence créée avec succès
+        400:
+          description: Code d'agence déjà utilisé ou manager invalide
+        401:
+          description: Non authentifié (token manquant ou invalide)
+        403:
+          description: Accès refusé (permissions insuffisantes)
+        500:
+          description: Erreur serveur
+
+  /management/agencies:
+    get:
+      summary: Récupérer toutes les agences
+      description: Accessible pour ADMIN_ABSHORE et COMPANY_MANAGER
+      tags:
+        - Management - Admin Abshore
+      security:
+        - bearerAuth: []
+      responses:
+        200:
+          description: Liste des agences
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    _id:
+                      type: string
+                    name:
+                      type: string
+                    code:
+                      type: string
+                    address:
+                      type: object
+                    contact:
+                      type: object
+                    companyManager:
+                      type: object
+                    createdBy:
+                      type: object
+                    createdAt:
+                      type: string
+                      format: date-time
+                    updatedAt:
+                      type: string
+                      format: date-time
+        401:
+          description: Non authentifié (token manquant ou invalide)
+        403:
+          description: Accès refusé (permissions insuffisantes)
+        500:
+          description: Erreur serveur
+
+  /management/addagent:
+    post:
+      summary: Ajouter un agent à une agence
+      description: Accessible pour ADMIN_AGENCY, COMPANY_MANAGER et ADMIN_ABSHORE
+      tags:
+        - Management - Agency
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+                - email
+                - password
+                - phoneNumber
+                - agencyId
+              properties:
+                name:
+                  type: string
+                  example: "Ali Agent"
+                email:
+                  type: string
+                  example: "ali.agent@agence.com"
+                password:
+                  type: string
+                  example: "motdepasse"
+                phoneNumber:
+                  type: string
+                  example: "12345678"
+                agencyId:
+                  type: string
+                  example: "665f1b2c3a4d5e6f7g8h9i0j"
+      responses:
+        201:
+          description: Agent créé avec succès
+        400:
+          description: Email déjà utilisé ou agence non trouvée
+        401:
+          description: Non authentifié (token manquant ou invalide)
+        403:
+          description: Accès refusé (pas autorisé)
+        500:
+          description: Erreur serveur
+
+  /management/agents:
+    get:
+      summary: Récupérer tous les agents (optionnellement d'une agence)
+      description: Accessible pour ADMIN_AGENCY, COMPANY_MANAGER et ADMIN_ABSHORE. Utilise le paramètre de requête agencyId pour filtrer.
+      tags:
+        - Management - Agency
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: query
+          name: agencyId
+          schema:
+            type: string
+          required: false
+          description: ID de l'agence pour filtrer les agents
+      responses:
+        200:
+          description: Liste des agents
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    _id:
+                      type: string
+                    name:
+                      type: string
+                    email:
+                      type: string
+                    phoneNumber:
+                      type: string
+                    agency:
+                      type: object
+                    createdAt:
+                      type: string
+                      format: date-time
+        401:
+          description: Non authentifié (token manquant ou invalide)
+        403:
+          description: Accès refusé (pas autorisé)
+        500:
+          description: Erreur serveur
+
+  /management/agent/{id}:
+    get:
+      summary: Récupérer un agent par son ID
+      description: Accessible pour ADMIN_AGENCY, COMPANY_MANAGER et ADMIN_ABSHORE
+      tags:
+        - Management - Agency
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: ID de l'agent
+      responses:
+        200:
+          description: Agent trouvé
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  _id:
+                    type: string
+                  name:
+                    type: string
+                  email:
+                    type: string
+                  phoneNumber:
+                    type: string
+                  agency:
+                    type: object
+                  createdAt:
+                    type: string
+                    format: date-time
+        401:
+          description: Non authentifié (token manquant ou invalide)
+        403:
+          description: Accès refusé (pas autorisé)
+        404:
+          description: Agent non trouvé
         500:
           description: Erreur serveur
 
