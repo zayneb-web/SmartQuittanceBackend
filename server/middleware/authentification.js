@@ -28,8 +28,8 @@ export const isAdminAbshore = (req, res, next) => {
   next();
 };
 
-export const isResponsableEntreprise = (req, res, next) => {
-  if (req.user.role !== "RESPONSABLE_ENTREPRISE") {
+export const isResponsableCompany = (req, res, next) => {
+  if (req.user.role !== "RESPONSABLE_COMPANY") {
     return res.status(403).json({ message: "Accès refusé" });
   }
   next();

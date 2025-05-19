@@ -33,15 +33,22 @@ const AgencySchema = new mongoose.Schema(
         required: true,
       },
     },
-    manager: {
+    companyManager: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       default: null,
     },
-    agents: [{
+    adminAgency: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
-    }],
+      default: null,
+    },
+    agents: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+      },
+    ],
     status: {
       type: String,
       enum: ["ACTIVE", "INACTIVE", "SUSPENDED"],

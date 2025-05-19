@@ -54,7 +54,7 @@ const UserSchema = new mongoose.Schema(
     ],
     company: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Entreprise",
+      ref: "Company",
     },
     agency: {
       type: mongoose.Schema.Types.ObjectId,
