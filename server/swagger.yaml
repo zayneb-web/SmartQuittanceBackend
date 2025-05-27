@@ -222,6 +222,9 @@ paths:
                 country:
                   type: string
                   example: "Tunisie"
+                photo:
+                  type: string
+                  example: "https://exemple.com/photo.jpg"
       responses:
         201:
           description: Admin Abshore créé avec succès
@@ -364,23 +367,21 @@ paths:
                 name:
                   type: string
                   example: "Sami Ben Salah"
-                  description: Nom du responsable
                 email:
                   type: string
                   example: "sami@example.com"
-                  description: Email du responsable
                 password:
                   type: string
                   example: "motdepasse"
-                  description: Mot de passe du responsable
                 phoneNumber:
                   type: string
                   example: "12345678"
-                  description: Numéro de téléphone
                 companyId:
                   type: string
                   example: "665f1b2c3a4d5e6f7g8h9i0j"
-                  description: ID de l'entreprise
+                photo:
+                  type: string
+                  example: "https://exemple.com/photo.jpg"
       responses:
         201:
           description: Responsable créé avec succès
@@ -460,23 +461,21 @@ paths:
                 name:
                   type: string
                   example: "Nadia Ben Mohamed"
-                  description: Nom du responsable financier
                 email:
                   type: string
                   example: "nadia@example.com"
-                  description: Email du responsable financier
                 password:
                   type: string
                   example: "motdepasse"
-                  description: Mot de passe du responsable financier
                 phoneNumber:
                   type: string
                   example: "12345678"
-                  description: Numéro de téléphone
                 companyId:
                   type: string
                   example: "665f1b2c3a4d5e6f7g8h9i0j"
-                  description: ID de l'entreprise
+                photo:
+                  type: string
+                  example: "https://exemple.com/photo.jpg"
       responses:
         201:
           description: Responsable financier créé avec succès
@@ -626,6 +625,9 @@ paths:
                 agencyId:
                   type: string
                   example: "665f1b2c3a4d5e6f7g8h9i0j"
+                photo:
+                  type: string
+                  example: "https://exemple.com/photo.jpg"
       responses:
         201:
           description: Admin d'agence créé avec succès
@@ -874,6 +876,9 @@ paths:
                 agencyId:
                   type: string
                   example: "665f1b2c3a4d5e6f7g8h9i0j"
+                photo:
+                  type: string
+                  example: "https://exemple.com/photo.jpg"
       responses:
         201:
           description: Agent créé avec succès

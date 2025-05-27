@@ -26,7 +26,7 @@ ac.grant("FINANCE_COMPANY_MANAGER")
 ac.grant("COMPANY_MANAGER")
   .extend("AGENT")
   .createAny("user")
-  .createOwn("amdin-agency")
+  .createAny("amdin-agency")
   .createAny("agency")
   .readOwn("company")
   .readAny("agency")
@@ -51,7 +51,8 @@ ac.grant("ADMIN_ABSHORE")
   .updateOwn("profile")
   .readAny("admin-abshore")
   .readAny("company-manager")
-  .readAny("finance-manager");
+  .readAny("finance-manager")
+  .updateAny("agency");
 
 ac.grant("SUPER_ADMIN_ABSHORE")
   .extend("ADMIN_ABSHORE")
