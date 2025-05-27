@@ -4,7 +4,7 @@ import jwt from "jsonwebtoken";
 
 export const signupSuperAdminAbshore = async (req, res) => {
   try {
-    const { name, email, password, phoneNumber } = req.body;
+    const { name, email, password, phoneNumber, photo } = req.body;
 
     const existingUser = await User.findOne({ email });
     if (existingUser)
@@ -19,6 +19,7 @@ export const signupSuperAdminAbshore = async (req, res) => {
       phoneNumber,
       role: "SUPER_ADMIN_ABSHORE",
       company: null,
+      photo: photo || "",
     });
 
     await user.save();
@@ -91,8 +92,8 @@ export const login = async (req, res) => {
     // Retourner l'utilisateur sans le mot de passe
     const userWithoutPassword = await User.findById(user._id)
       .select("-password")
-      .populate("company") // Populate company data if needed
-      .populate("agency"); // Populate agency data if needed
+      .populate("company")
+      .populate("agency");
 
     res.json({
       message: "Connexion réussie",

@@ -29,6 +29,23 @@ const UserSchema = new mongoose.Schema(
     country: String,
     occupation: String,
     transactions: Array,
+    photo: {
+      type: String,
+      default: "",
+    },
+    gender: {
+      type: String,
+      enum: ["male", "female", "other"],
+    },
+    about: {
+      type: String,
+      default: "",
+    },
+    experience: {
+      type: Number,
+      default: 0,
+    },
+
     role: {
       type: String,
       enum: [
@@ -66,7 +83,7 @@ const UserSchema = new mongoose.Schema(
     },
     isActive: {
       type: Boolean,
-      default: true, // pour soft delete
+      default: true,
     },
   },
   { timestamps: true }
